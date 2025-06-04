@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.store_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "29.0.13113456"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -20,6 +20,8 @@ android {
     }
 
     defaultConfig {
+        multiDexEnabled = true
+        minSdk = 23
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.store_app"
         // You can update the following values to match your application needs.
@@ -41,4 +43,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation("androidx.multidex:multidex:2.0.1")
 }

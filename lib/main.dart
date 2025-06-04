@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:store_app/pages/home_page.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const StoreApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class StoreApp extends StatelessWidget {
+  const StoreApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      routes: {HomePage.id: (context) => const HomePage()},
+      debugShowCheckedModeBanner: false,
+      initialRoute: HomePage.id,
     );
   }
 }
