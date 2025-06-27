@@ -14,7 +14,7 @@ class StoreApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         HomePage.id: (context) => const HomePage(),
-        UpdateProductPage.id: (context) => const UpdateProductPage(),
+        UpdateProductPage.id: (context) =>  UpdateProductPage(),
       },
       debugShowCheckedModeBanner: false,
       initialRoute: HomePage.id,
