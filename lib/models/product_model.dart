@@ -21,11 +21,15 @@ class ProductModel {
     return ProductModel(
       id: json['id'],
       title: json['title'],
-      price: json['price'].toDouble(),
+      price: json['price'] is String
+          ? double.tryParse(json['price']) ?? 0.0
+          : (json['price'] as num).toDouble(),
       description: json['description'],
       imageUrl: json['image'],
       category: json['category'],
-      rating: RatingModel.fromJson(json['rating']),
+      rating: json['rating'] != null
+          ? RatingModel.fromJson(json['rating'])
+          : RatingModel(rate: 0.0, count: 0),
     );
   }
 }
@@ -37,6 +41,11 @@ class RatingModel {
   RatingModel({required this.rate, required this.count});
 
   factory RatingModel.fromJson(Map<String, dynamic> json) {
-    return RatingModel(rate: json['rate'].toDouble(), count: json['count']);
+    return RatingModel(
+      rate: json['rate'] is String
+          ? double.tryParse(json['rate']) ?? 0.0
+          : (json['rate'] as num).toDouble(),
+      count: json['count'] ?? 0,
+    );
   }
 }

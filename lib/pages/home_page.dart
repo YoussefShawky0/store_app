@@ -4,9 +4,28 @@ import 'package:store_app/models/product_model.dart';
 import 'package:store_app/services/get_all_products_service.dart';
 import 'package:store_app/widgets/custom_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
   static const String id = 'HomePage';
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late Future<List<ProductModel>> futureProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    futureProducts = GetAllProductsService().getAllProducts();
+  }
+
+  void refreshProducts() {
+    setState(() {
+      futureProducts = GetAllProductsService().getAllProducts();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +48,14 @@ class HomePage extends StatelessWidget {
               size: 30,
               color: Colors.black,
             ),
-            onPressed: () {
-              // Add cart functionality here
-            },
+            onPressed: () {},
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: FutureBuilder<List<ProductModel>>(
-          future: GetAllProductsService().getAllProducts(),
+          future: futureProducts,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -58,7 +75,17 @@ class HomePage extends StatelessWidget {
                 ),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return CustomCard(productModel: snapshot.data![index]);
+                  return GestureDetector(
+                    onTap: () async {
+                      await Navigator.pushNamed(
+                        context,
+                        'UpdateProductPage',
+                        arguments: snapshot.data![index],
+                      );
+                      refreshProducts();
+                    },
+                    child: CustomCard(productModel: snapshot.data![index]),
+                  );
                 },
               );
             }

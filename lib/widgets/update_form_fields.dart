@@ -27,34 +27,34 @@ class _UpdateFormFieldsState extends State<UpdateFormFields> {
       children: [
         CustomFormTextField(
           onChanged: (value) {
-            productName = value;
+            productName = value.trim().isEmpty ? null : value.trim();
           },
           labelText: 'Product Name',
-          hintText: 'Enter product name',
+          hintText: widget.productModel.title, // Show current value as hint
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         CustomFormTextField(
           onChanged: (value) {
-            productDescription = value;
+            productDescription = value.trim().isEmpty ? null : value.trim();
           },
           labelText: 'Description',
-          hintText: 'Enter product description',
+          hintText: widget.productModel.description,
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         CustomFormTextField(
           onChanged: (value) {
-            productPrice = value;
+            productPrice = value.trim().isEmpty ? null : value.trim();
           },
           labelText: 'Price',
-          hintText: 'Enter product price',
+          hintText: widget.productModel.price.toString(),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         CustomFormTextField(
           onChanged: (value) {
-            productImageUrl = value;
+            productImageUrl = value.trim().isEmpty ? null : value.trim();
           },
           labelText: 'Image URL',
-          hintText: 'https://example.com/image.jpg',
+          hintText: widget.productModel.imageUrl,
         ),
         const SizedBox(height: 40),
         CustomButton(
@@ -65,11 +65,12 @@ class _UpdateFormFieldsState extends State<UpdateFormFields> {
               await updateProduct();
               Navigator.pop(context);
             } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Update failed: $e')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Update failed: $e')));
+            } finally {
+              widget.onLoadingChanged(false);
             }
-            widget.onLoadingChanged(false);
           },
         ),
       ],
@@ -80,7 +81,9 @@ class _UpdateFormFieldsState extends State<UpdateFormFields> {
     await UpdateProductService().updateProduct(
       id: widget.productModel.id,
       title: productName ?? widget.productModel.title,
-      price: productPrice ?? widget.productModel.price.toString(),
+      price: productPrice != null
+          ? double.tryParse(productPrice!) ?? widget.productModel.price
+          : widget.productModel.price,
       description: productDescription ?? widget.productModel.description,
       image: productImageUrl ?? widget.productModel.imageUrl,
       category: widget.productModel.category,
